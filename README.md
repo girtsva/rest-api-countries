@@ -21,3 +21,5 @@ Uses [Refit REST library](https://github.com/reactiveui/refit) and NUnit testing
 ![screenshot](/scr/04.png "run-tests-vs2022")
 
 Tests results will be shown in Test Explorer.
+
+![screenshot](/scr/05.png "test-explorer-vs2022")
