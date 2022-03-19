@@ -1,6 +1,6 @@
 ﻿namespace RestApiCountries.Models
 {
-    public class TruncatedCountry
+    public class CountryWithoutName
     {
         public double Area { get; init; }
         public int Population { get; init; }

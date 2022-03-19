@@ -11,16 +11,26 @@ namespace RestApiCountries.Services
             return countries.Where(country => country.Independent);
         }
 
-        //public static IEnumerable<Country> 
-
-        public static bool IsValidEuCountryName(IEnumerable<Country> euCountries, Country name)
+        public static IEnumerable<Country> ExtractTopTenCountriesByPopulation(IEnumerable<Country> countries)
         {
-            return euCountries.Any(country => country.Name == name.Name);
+            //var independentEuCountries = GetIndependentEuCountries(euBlocCountries);
+            return countries.OrderByDescending(country => country.Population).Take(10);
         }
 
-        public static TruncatedCountry GetSingleCountry(Country country)
+        public static IEnumerable<Country> ExtractTopTenCountriesByPopulationDensity(IEnumerable<Country> countries)
         {
-            var singleCountry = new TruncatedCountry()
+            //var independentEuCountries = GetIndependentEuCountries(euBlocCountries);
+            return countries.OrderByDescending(country => country.Population / country.Area).Take(10);
+        }
+
+        public static bool IsValidEuCountryName(IEnumerable<Country> euCountries, string name)
+        {
+            return euCountries.Any(country => country.Name?.ToLower() == name);
+        }
+
+        public static CountryWithoutName GetSingleCountryWithoutName(Country country)
+        {
+            var singleCountry = new CountryWithoutName()
             {
                 Area = country.Area,
                 Population = country.Population,

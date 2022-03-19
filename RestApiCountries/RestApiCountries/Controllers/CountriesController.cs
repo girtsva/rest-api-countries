@@ -1,7 +1,4 @@
-﻿using System.Net;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Refit;
+﻿using Microsoft.AspNetCore.Mvc;
 using RestApiCountries.DataSource;
 using RestApiCountries.Services;
 
@@ -12,12 +9,10 @@ namespace RestApiCountries.Controllers
     public class CountriesController : ControllerBase
     {
         private readonly IRestCountriesApi _countries;
-        //private readonly CountryService _service;
-
+        
         public CountriesController(IRestCountriesApi countries)
         {
             _countries = countries;
-            //_service = service;
         }
 
         /// <summary>
@@ -25,14 +20,12 @@ namespace RestApiCountries.Controllers
         /// </summary>
         [HttpGet]
         [Route("population/top10")]
-        public async Task<IActionResult> GetTopTenCountriesByPopulation()
+        public async Task<IActionResult> GetTopTenEuCountriesByPopulation()
         {
-            var allEuCountries = await _countries.GetEuCountries();
+            var allEuCountries = await _countries.GetEuBlocCountries();
             var independentEuCountries = CountryService.GetIndependentEuCountries(allEuCountries);
-            var topTenEuCountriesByPopulation =
-                independentEuCountries.OrderByDescending(country => country.Population).Take(10);
 
-            return Ok(topTenEuCountriesByPopulation);
+            return Ok(CountryService.ExtractTopTenCountriesByPopulation(independentEuCountries));
         }
 
         /// <summary>
@@ -42,12 +35,10 @@ namespace RestApiCountries.Controllers
         [Route("population-density/top10")]
         public async Task<IActionResult> GetTopTenCountriesByPopulationDensity()
         {
-            var allEuCountries = await _countries.GetEuCountries();
+            var allEuCountries = await _countries.GetEuBlocCountries();
             var independentEuCountries = CountryService.GetIndependentEuCountries(allEuCountries);
-            var topTenEuCountriesByPopulationDensity =
-                independentEuCountries.OrderByDescending(country => country.Population / country.Area).Take(10);
-
-            return Ok(topTenEuCountriesByPopulationDensity);
+            
+            return Ok(CountryService.ExtractTopTenCountriesByPopulationDensity(independentEuCountries));
         }
 
         /// <summary>
@@ -59,26 +50,18 @@ namespace RestApiCountries.Controllers
         [Route("{name}")]
         public async Task<IActionResult> GetCountryByName(string name)
         {
-            var allEuCountries = await _countries.GetEuCountries();
-            try
-            {
-                var foundCountriesByName = await _countries.GetCountryByCountryName(name);
-                var specifiedCountryName = foundCountriesByName.FirstOrDefault();
-                var independentEuCountries = CountryService.GetIndependentEuCountries(allEuCountries);
+            var allEuCountries = await _countries.GetEuBlocCountries();
+            var independentEuCountries = CountryService.GetIndependentEuCountries(allEuCountries);
 
-                if (specifiedCountryName != null &&
-                    CountryService.IsValidEuCountryName(independentEuCountries, specifiedCountryName))
-                {
-                    var country = CountryService.GetSingleCountry(specifiedCountryName);
-                    return Ok(country);
-                }
-                    
-            }
-            catch (ApiException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
-            {
-                return BadRequest($"There is no such EU country with the name \"{name}\"!");
-            }
+            var tidyCountryName = name.ToLower().Trim();
 
+            if (CountryService.IsValidEuCountryName(independentEuCountries, tidyCountryName))
+            {
+                var countriesFoundByName = await _countries.GetCountryByCountryName(tidyCountryName);
+                var specifiedCountryName = countriesFoundByName.FirstOrDefault();
+
+                return Ok(CountryService.GetSingleCountryWithoutName(specifiedCountryName!));
+            }
 
             return BadRequest($"There is no such EU country with the name \"{name}\"!");
         }
