@@ -12,7 +12,7 @@ Uses [Refit REST library](https://github.com/reactiveui/refit) and NUnit testing
 
 3. You should see an open browser window with Swagger project page (http://localhost:5157/swagger/index.html)
 
-![screenshot](/scr/02.png "swagger-endpoints")
+![screenshot](/scr/02.PNG "swagger-endpoints")
 
 4. To try the API, you can click on GET requests (GET -> Try it out -> Execute). For last request you have to enter country name before clicking on 'Execute'.
 5. You should see the result in JSON format. For the last GET request, if not a valid EU country name was entered, you will see an appropriate error message.
