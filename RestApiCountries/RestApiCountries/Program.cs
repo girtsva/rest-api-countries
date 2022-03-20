@@ -3,6 +3,10 @@ using Microsoft.OpenApi.Models;
 using Refit;
 using RestApiCountries.DataSource;
 
+IConfiguration config = new ConfigurationBuilder()
+    .AddJsonFile("appsettings.json")
+    .Build();
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -28,7 +32,7 @@ builder.Services.AddSwaggerGen(options =>
 
 // Refit configuration
 builder.Services.AddRefitClient<IRestCountriesApi>()
-       .ConfigureHttpClient(httpClient => httpClient.BaseAddress = new Uri("https://restcountries.com/"));
+       .ConfigureHttpClient(httpClient => httpClient.BaseAddress = new Uri(config["IRestCountriesApi:WebsiteURL"]));
 
 var app = builder.Build();
 

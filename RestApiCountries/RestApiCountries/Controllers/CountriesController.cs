@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RestApiCountries.DataSource;
-using RestApiCountries.Services;
+using RestApiCountries.Filters;
 
 namespace RestApiCountries.Controllers
 {
@@ -23,9 +23,9 @@ namespace RestApiCountries.Controllers
         public async Task<IActionResult> GetTopTenEuCountriesByPopulation()
         {
             var allEuCountries = await _countries.GetEuBlocCountries();
-            var independentEuCountries = CountryService.GetIndependentEuCountries(allEuCountries);
+            var independentEuCountries = CountryFilters.GetIndependentEuCountries(allEuCountries);
 
-            return Ok(CountryService.ExtractTopTenCountriesByPopulation(independentEuCountries));
+            return Ok(CountryFilters.ExtractTopTenCountriesByPopulation(independentEuCountries));
         }
 
         /// <summary>
@@ -36,9 +36,9 @@ namespace RestApiCountries.Controllers
         public async Task<IActionResult> GetTopTenCountriesByPopulationDensity()
         {
             var allEuCountries = await _countries.GetEuBlocCountries();
-            var independentEuCountries = CountryService.GetIndependentEuCountries(allEuCountries);
+            var independentEuCountries = CountryFilters.GetIndependentEuCountries(allEuCountries);
             
-            return Ok(CountryService.ExtractTopTenCountriesByPopulationDensity(independentEuCountries));
+            return Ok(CountryFilters.ExtractTopTenCountriesByPopulationDensity(independentEuCountries));
         }
 
         /// <summary>
@@ -51,16 +51,16 @@ namespace RestApiCountries.Controllers
         public async Task<IActionResult> GetCountryByName(string name)
         {
             var allEuCountries = await _countries.GetEuBlocCountries();
-            var independentEuCountries = CountryService.GetIndependentEuCountries(allEuCountries);
+            var independentEuCountries = CountryFilters.GetIndependentEuCountries(allEuCountries);
 
             var tidyCountryName = name.ToLower().Trim();
 
-            if (CountryService.IsValidEuCountryName(independentEuCountries, tidyCountryName))
+            if (CountryFilters.IsValidEuCountryName(independentEuCountries, tidyCountryName))
             {
                 var countriesFoundByName = await _countries.GetCountryByCountryName(tidyCountryName);
                 var specifiedCountryName = countriesFoundByName.FirstOrDefault();
 
-                return Ok(CountryService.GetSingleCountryWithoutName(specifiedCountryName!));
+                return Ok(CountryFilters.GetSingleCountryWithoutName(specifiedCountryName!));
             }
 
             return BadRequest($"There is no such EU country with the name \"{name}\"!");

@@ -1,23 +1,23 @@
-using Newtonsoft.Json;
+ï»¿using Newtonsoft.Json;
 using NUnit.Framework;
 using RestApiCountries.Models;
-using RestApiCountries.Services;
 using System.Collections.Generic;
 using System.Linq;
+using RestApiCountries.Filters;
 
 namespace RestApiCountries.Tests
 {
-    public class CountryServiceTests
+    public class CountryFilterTests
     {
         private readonly List<Country> _testCountries = new()
         {
             new Country
             {
-                Name = "Åland Islands",
+                Name = "ï¿½land Islands",
                 Area = 1580,
                 Population = 28875,
                 TopLevelDomain = new List<string> { ".ax" },
-                NativeName = "Åland",
+                NativeName = "ï¿½land",
                 Independent = false
             },
             new Country
@@ -26,7 +26,7 @@ namespace RestApiCountries.Tests
                 Area = 83871,
                 Population = 8917205,
                 TopLevelDomain = new List<string> { ".at" },
-                NativeName = "Österreich",
+                NativeName = "ï¿½sterreich",
                 Independent = true
             },
             new Country
@@ -52,7 +52,7 @@ namespace RestApiCountries.Tests
                     Area = 83871,
                     Population = 8917205,
                     TopLevelDomain = new List<string> {".at"},
-                    NativeName = "Österreich",
+                    NativeName = "ï¿½sterreich",
                     Independent = true
                 },
                 new Country
@@ -67,7 +67,7 @@ namespace RestApiCountries.Tests
             };
 
             //Act
-            var returnedCountries = CountryService.GetIndependentEuCountries(_testCountries).ToList();
+            var returnedCountries = CountryFilters.GetIndependentEuCountries(_testCountries).ToList();
 
             //Assert
             Assert.AreEqual(JsonConvert.SerializeObject(expectedCountries), JsonConvert.SerializeObject(returnedCountries));
@@ -85,7 +85,7 @@ namespace RestApiCountries.Tests
                     Area = 83871,
                     Population = 8917205,
                     TopLevelDomain = new List<string> {".at"},
-                    NativeName = "Österreich",
+                    NativeName = "ï¿½sterreich",
                     Independent = true
                 },
                 new Country
@@ -99,17 +99,17 @@ namespace RestApiCountries.Tests
                 },
                 new Country
                 {
-                    Name = "Åland Islands",
+                    Name = "ï¿½land Islands",
                     Area = 1580,
                     Population = 28875,
                     TopLevelDomain = new List<string> { ".ax" },
-                    NativeName = "Åland",
+                    NativeName = "ï¿½land",
                     Independent = false
                 }
             };
 
             //Act
-            var returnedCountries = CountryService.ExtractTopTenCountriesByPopulation(_testCountries).ToList();
+            var returnedCountries = CountryFilters.ExtractTopTenCountriesByPopulation(_testCountries).ToList();
 
             //Assert
             Assert.AreEqual(JsonConvert.SerializeObject(expectedCountries), JsonConvert.SerializeObject(returnedCountries));
@@ -127,7 +127,7 @@ namespace RestApiCountries.Tests
                     Area = 83871,
                     Population = 8917205,
                     TopLevelDomain = new List<string> {".at"},
-                    NativeName = "Österreich",
+                    NativeName = "ï¿½sterreich",
                     Independent = true
                 },
                 new Country
@@ -141,17 +141,17 @@ namespace RestApiCountries.Tests
                 },
                 new Country
                 {
-                    Name = "Åland Islands",
+                    Name = "ï¿½land Islands",
                     Area = 1580,
                     Population = 28875,
                     TopLevelDomain = new List<string> { ".ax" },
-                    NativeName = "Åland",
+                    NativeName = "ï¿½land",
                     Independent = false
                 }
             };
 
             //Act
-            var returnedCountries = CountryService.ExtractTopTenCountriesByPopulationDensity(_testCountries).ToList();
+            var returnedCountries = CountryFilters.ExtractTopTenCountriesByPopulationDensity(_testCountries).ToList();
 
             //Assert
             Assert.AreEqual(JsonConvert.SerializeObject(expectedCountries), JsonConvert.SerializeObject(returnedCountries));
@@ -165,8 +165,8 @@ namespace RestApiCountries.Tests
             var nonEuCountryName = "morocco";
 
             //Act
-            var isEuCountryNameValid = CountryService.IsValidEuCountryName(_testCountries, euCountryName);
-            var isNonEuCountryNameValid = CountryService.IsValidEuCountryName(_testCountries, nonEuCountryName);
+            var isEuCountryNameValid = CountryFilters.IsValidEuCountryName(_testCountries, euCountryName);
+            var isNonEuCountryNameValid = CountryFilters.IsValidEuCountryName(_testCountries, nonEuCountryName);
 
             //Assert
             Assert.True(isEuCountryNameValid);
@@ -183,12 +183,12 @@ namespace RestApiCountries.Tests
                 Area = 83871,
                 Population = 8917205,
                 TopLevelDomain = new List<string> {".at"},
-                NativeName = "Österreich",
+                NativeName = "ï¿½sterreich",
                 Independent = true
             };
 
             //Act
-            var countryWithoutName = CountryService.GetSingleCountryWithoutName(testCountry);
+            var countryWithoutName = CountryFilters.GetSingleCountryWithoutName(testCountry);
 
             //Assert
             Assert.AreEqual(JsonConvert.SerializeObject(expectedCountry), JsonConvert.SerializeObject(countryWithoutName));

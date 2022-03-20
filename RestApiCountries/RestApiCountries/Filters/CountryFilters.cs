@@ -1,9 +1,8 @@
-﻿using RestApiCountries.DataSource;
-using RestApiCountries.Models;
+﻿using RestApiCountries.Models;
 
-namespace RestApiCountries.Services
+namespace RestApiCountries.Filters
 {
-    public static class CountryService
+    public static class CountryFilters
     {
         public static IEnumerable<Country> GetIndependentEuCountries(List<Country> countries)
         {
